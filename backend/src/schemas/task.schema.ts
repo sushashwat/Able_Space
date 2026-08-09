@@ -49,7 +49,7 @@ export class Task {
   labels!: string[];
 
   @Prop({ type: Types.ObjectId, ref: 'Task', default: null })
-  parentTask!: Types.ObjectId; // agar ye subtask hai to parent ka reference
+  parentTask!: Types.ObjectId; 
 
   @Prop({ type: Types.ObjectId, ref: 'Project', default: null })
   project!: Types.ObjectId;
