@@ -27,7 +27,7 @@ export class Project {
   @Prop({ type: Types.ObjectId, ref: 'User', default: null })
   lead!: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'User', required: true })
+  @Prop({ type: Types.ObjectId, ref: 'User', required: true, index:true })
   reporter!: Types.ObjectId;
 
   @Prop({ default: null })

@@ -54,7 +54,7 @@ export class Task {
   @Prop({ type: Types.ObjectId, ref: 'Project', default: null })
   project!: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'User' })
+  @Prop({ type: Types.ObjectId, ref: 'User', index:true })
   reporter!: Types.ObjectId;
 
   @Prop({ type: [Comment], default: [] })
