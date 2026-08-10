@@ -9,7 +9,7 @@ import type { UpdateProjectDto } from './dto/update-project.dto';
 export class ProjectsService {
   constructor(
     @InjectModel(Project.name) private projectModel: Model<ProjectDocument>,
-  ) {}
+  ) { }
 
   async create(createProjectDto: CreateProjectDto, userId: string) {
     const project = new this.projectModel({
@@ -20,13 +20,21 @@ export class ProjectsService {
     return project.save();
   }
 
-  async findAll(userId: string) {
-    return this.projectModel
-      .find({
-        $or: [{ reporter: userId }, { lead: userId }, { members: userId }],
-      })
-      .sort({ createdAt: -1 })
-      .exec();
+  async findAll(userId: string, page = 1, limit = 20) {
+    const query = {
+      $or: [{ reporter: userId }, { lead: userId }, { members: userId }],
+    };
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      this.projectModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).exec(),
+      this.projectModel.countDocuments(query),
+    ]);
+
+    return {
+      data,
+      meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
+    };
   }
 
   async findOne(id: string, userId: string) {

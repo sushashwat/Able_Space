@@ -8,6 +8,7 @@ import {
   Delete,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import type { Request } from 'express';
 import { ProjectsService } from './projects.service';
@@ -18,7 +19,7 @@ import { JwtAuthGuard } from '../auth/strategies/jwt.auth.guard';
 @UseGuards(JwtAuthGuard)
 @Controller('projects')
 export class ProjectsController {
-  constructor(private readonly projectsService: ProjectsService) {}
+  constructor(private readonly projectsService: ProjectsService) { }
 
   @Post()
   create(@Body() createProjectDto: CreateProjectDto, @Req() req: Request) {
@@ -26,10 +27,19 @@ export class ProjectsController {
     return this.projectsService.create(createProjectDto, userId);
   }
 
+
   @Get()
-  findAll(@Req() req: Request) {
+  findAll(
+    @Req() req: Request,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
     const userId = (req.user as any).userId;
-    return this.projectsService.findAll(userId);
+    return this.projectsService.findAll(
+      userId,
+      page ? parseInt(page) : undefined,
+      limit ? parseInt(limit) : undefined,
+    );
   }
 
   @Get(':id')

@@ -15,16 +15,16 @@ import type { Request } from 'express';
 import { TasksService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
-import { JwtAuthGuard } from '../auth/strategies/jwt.auth.guard'; 
+import { JwtAuthGuard } from '../auth/strategies/jwt.auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('tasks')
 export class TasksController {
-  constructor(private readonly tasksService: TasksService) {}
+  constructor(private readonly tasksService: TasksService) { }
 
   @Post()
   create(@Body() createTaskDto: CreateTaskDto, @Req() req: Request) {
-    const userId = (req.user as any).userId; 
+    const userId = (req.user as any).userId;
     return this.tasksService.create(createTaskDto, userId);
   }
 
@@ -33,9 +33,16 @@ export class TasksController {
     @Req() req: Request,
     @Query('projectId') projectId?: string,
     @Query('status') status?: string,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
   ) {
     const userId = (req.user as any).userId;
-    return this.tasksService.findAll(userId, { projectId, status });
+    return this.tasksService.findAll(userId, {
+      projectId,
+      status,
+      page: page ? parseInt(page) : undefined,
+      limit: limit ? parseInt(limit) : undefined,
+    });
   }
 
   @Get(':id')

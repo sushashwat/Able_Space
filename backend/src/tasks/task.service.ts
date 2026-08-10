@@ -10,7 +10,7 @@ import type { UpdateTaskDto } from './dto/update-task.dto';
 export class TasksService {
   constructor(
     @InjectModel(Task.name) private taskModel: Model<TaskDocument>,
-  ) {}
+  ) { }
 
   async create(createTaskDto: CreateTaskDto, userId: string) {
     const task = new this.taskModel({
@@ -20,15 +20,28 @@ export class TasksService {
     return task.save();
   }
 
-  async findAll(userId: string, filters?: { projectId?: string; status?: string }) {
+  async findAll(
+    userId: string,
+    filters?: { projectId?: string; status?: string; page?: number; limit?: number },
+  ) {
     const query: Record<string, any> = { reporter: userId };
-
-    if (filters?.projectId) query.projectId = filters.projectId;
+    if (filters?.projectId) query.project = filters.projectId;
     if (filters?.status) query.status = filters.status;
 
-    return this.taskModel.find(query).sort({ createdAt: -1 }).exec();
-  }
+    const page = filters?.page && filters.page > 0 ? filters.page : 1;
+    const limit = filters?.limit && filters.limit > 0 ? filters.limit : 20;
+    const skip = (page - 1) * limit;
 
+    const [data, total] = await Promise.all([
+      this.taskModel.find(query).sort({ createdAt: -1 }).skip(skip).limit(limit).exec(),
+      this.taskModel.countDocuments(query),
+    ]);
+
+    return {
+      data,
+      meta: { total, page, limit, totalPages: Math.ceil(total / limit) },
+    };
+  }
   async findOne(id: string, userId: string) {
     const task = await this.taskModel.findById(id).exec();
     if (!task) throw new NotFoundException('Task not found');
