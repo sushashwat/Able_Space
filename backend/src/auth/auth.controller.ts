@@ -1,7 +1,10 @@
+// backend/src/auth/auth.controller.ts
+
 import { Controller, Get, Post, UseGuards, Req, Res } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import type { Response } from 'express';
+import { JwtAuthGuard } from './strategies/jwt.auth.guard';
+import type { Response, Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -15,16 +18,22 @@ export class AuthController {
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleAuth() {
-    // will redirect to google login page 
+    // will redirect to google login page
   }
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthCallback(@Req() req: any, @Res() res: Response) {
     const result = await this.authService.googleLogin(req.user);
-    // Frontend pe redirect karo token ke saath
     res.redirect(
       `http://localhost:3000/auth/callback?token=${result.access_token}`,
     );
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async getProfile(@Req() req: Request) {
+    const userId = (req.user as any).userId;
+    return this.authService.getProfile(userId);
   }
 }
