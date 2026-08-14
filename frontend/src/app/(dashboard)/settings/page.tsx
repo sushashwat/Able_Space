@@ -1,12 +1,13 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useAuthStore } from '@/lib/store/authStore';
 import { useThemeStore } from '@/lib/store/themeStore';
 import { apiClient } from '@/lib/api/client';
+import { getProfile } from '@/lib/api/auth';
 import type { Theme, ColorMode } from '@/lib/types/user';
 
 const colorModes: ColorMode[] = ['amber', 'blue', 'pink', 'rose', 'emerald', 'black'];
@@ -27,10 +28,26 @@ export default function SettingsPage() {
   const { user, setUser } = useAuthStore();
   const { theme, colorMode, setTheme, setColorMode } = useThemeStore();
 
-  const [fullName, setFullName] = useState(user?.fullName ?? '');
-  const [title, setTitle] = useState((user as any)?.title ?? '');
-  const [username, setUsername] = useState((user as any)?.username ?? '');
+  const [fullName, setFullName] = useState('');
+  const [title, setTitle] = useState('');
+  const [username, setUsername] = useState('');
   const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    getProfile()
+      .then((freshUser) => {
+        setUser(freshUser);
+      })
+      .catch(() => { });
+  }, []);
+
+  useEffect(() => {
+    if (user) {
+      setFullName(user.fullName ?? '');
+      setTitle((user as any).title ?? '');
+      setUsername((user as any).username ?? '');
+    }
+  }, [user]);
 
   async function handleSaveProfile() {
     setSaving(true);
@@ -50,12 +67,11 @@ export default function SettingsPage() {
     <div className="h-full overflow-y-auto p-6 max-w-2xl">
       <h1 className="text-lg font-semibold mb-6">Settings</h1>
 
-      {/* Profile section */}
       <div className="rounded-lg border p-6 mb-6">
         <h2 className="text-sm font-semibold mb-4">Profile</h2>
 
         <div className="flex items-center justify-between mb-4">
-          <span className="text-sm text-gray-500">Profile picture</span>
+          <span className="text-sm text-muted-foreground">Profile picture</span>
           <Avatar className="h-10 w-10">
             <AvatarImage src={user?.avatarUrl} />
             <AvatarFallback>
@@ -65,17 +81,17 @@ export default function SettingsPage() {
         </div>
 
         <div className="flex items-center justify-between mb-4">
-          <span className="text-sm text-gray-500">Email</span>
-          <span className="text-sm text-gray-800">{user?.email}</span>
+          <span className="text-sm text-muted-foreground">Email</span>
+          <span className="text-sm text-foreground">{user?.email}</span>
         </div>
 
         <div className="mb-4">
-          <label className="text-sm text-gray-500 block mb-1">Full name</label>
+          <label className="text-sm text-muted-foreground block mb-1">Full name</label>
           <Input value={fullName} onChange={(e) => setFullName(e.target.value)} />
         </div>
 
         <div className="mb-4">
-          <label className="text-sm text-gray-500 block mb-1">Title</label>
+          <label className="text-sm text-muted-foreground block mb-1">Title</label>
           <Input
             placeholder="Your job title or role"
             value={title}
@@ -84,7 +100,7 @@ export default function SettingsPage() {
         </div>
 
         <div className="mb-4">
-          <label className="text-sm text-gray-500 block mb-1">Username</label>
+          <label className="text-sm text-muted-foreground block mb-1">Username</label>
           <Input
             placeholder="One word, like a nickname or first name"
             value={username}
@@ -97,7 +113,6 @@ export default function SettingsPage() {
         </Button>
       </div>
 
-      {/* Theme section */}
       <div className="rounded-lg border p-6 mb-6">
         <h2 className="text-sm font-semibold mb-4">Theme</h2>
         <div className="flex gap-3">
@@ -105,9 +120,8 @@ export default function SettingsPage() {
             <button
               key={t}
               onClick={() => setTheme(t)}
-              className={`flex-1 rounded-md border py-2 text-sm font-medium capitalize ${
-                theme === t ? 'border-black bg-gray-50' : 'border-gray-200'
-              }`}
+              className={`flex-1 rounded-md border py-2 text-sm font-medium capitalize ${theme === t ? 'border-foreground bg-muted' : 'border-border'
+                }`}
             >
               {t}
             </button>
@@ -115,7 +129,6 @@ export default function SettingsPage() {
         </div>
       </div>
 
-      {/* Color section */}
       <div className="rounded-lg border p-6">
         <h2 className="text-sm font-semibold mb-4">Color</h2>
         <div className="flex gap-3 flex-wrap">
@@ -126,12 +139,11 @@ export default function SettingsPage() {
               className="flex flex-col items-center gap-1"
             >
               <span
-                className={`h-8 w-8 rounded-full border-2 ${
-                  colorMode === c ? 'border-black' : 'border-transparent'
-                }`}
+                className={`h-8 w-8 rounded-full border-2 ${colorMode === c ? 'border-foreground' : 'border-transparent'
+                  }`}
                 style={{ backgroundColor: colorSwatch(c) }}
               />
-              <span className="text-xs text-gray-500 capitalize">{c}</span>
+              <span className="text-xs text-muted-foreground capitalize">{c}</span>
             </button>
           ))}
         </div>
