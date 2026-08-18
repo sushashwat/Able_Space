@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import type { KeyboardEvent } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { ArrowLeft } from 'lucide-react';
@@ -24,6 +25,7 @@ export default function TaskDetailPage() {
   const [task, setTask] = useState<Task | null>(null);
   const [loading, setLoading] = useState(true);
   const [comment, setComment] = useState('');
+  const [newTeam, setNewTeam] = useState('');
 
   useEffect(() => {
     loadTask();
@@ -48,6 +50,27 @@ export default function TaskDetailPage() {
   async function handlePriorityChange(value: string | null) {
     if (!task || !value) return;
     const updated = await updateTask(task._id, { priority: value as Priority });
+    setTask(updated);
+  }
+
+  async function handleAddTeam(e: KeyboardEvent<HTMLInputElement>) {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
+    const value = newTeam.trim();
+    if (!task || !value || task.teams.includes(value)) {
+      setNewTeam('');
+      return;
+    }
+    const updated = await updateTask(task._id, { teams: [...task.teams, value] });
+    setTask(updated);
+    setNewTeam('');
+  }
+
+  async function handleRemoveTeam(team: string) {
+    if (!task) return;
+    const updated = await updateTask(task._id, {
+      teams: task.teams.filter((t) => t !== team),
+    });
     setTask(updated);
   }
 
@@ -153,6 +176,30 @@ export default function TaskDetailPage() {
             <div>
               <p className="text-muted-foreground mb-1">Members</p>
               <p className="text-foreground">{task.members.length} assigned</p>
+            </div>
+
+            <div>
+              <p className="text-muted-foreground mb-1">Teams</p>
+              <div className="flex flex-wrap gap-1.5 mb-2">
+                {task.teams.map((team) => (
+                  <Badge key={team} variant="secondary" className="gap-1">
+                    {team}
+                    <button
+                      onClick={() => handleRemoveTeam(team)}
+                      className="ml-0.5 text-muted-foreground hover:text-foreground"
+                    >
+                      ×
+                    </button>
+                  </Badge>
+                ))}
+              </div>
+              <input
+                value={newTeam}
+                onChange={(e) => setNewTeam(e.target.value)}
+                onKeyDown={handleAddTeam}
+                placeholder="Add team, press Enter"
+                className="w-full rounded-md border px-2 py-1.5 text-sm bg-background"
+              />
             </div>
           </div>
         </div>
