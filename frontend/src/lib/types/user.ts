@@ -1,5 +1,3 @@
-
-
 export type Theme = 'light' | 'dark';
 export type ColorMode = 'amber' | 'blue' | 'pink' | 'rose' | 'emerald' | 'black';
 
@@ -18,6 +16,13 @@ export interface User extends AuthUser {
   colorMode: ColorMode;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface UserSummary {
+  _id: string;
+  fullName: string;
+  avatarUrl: string;
+  email: string;
 }
 
 export interface AuthResponse {

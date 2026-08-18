@@ -9,6 +9,7 @@ import type {
 interface TaskFilters {
   projectId?: string;
   status?: string;
+  parentTask?: string;
   page?: number;
   limit?: number;
 }

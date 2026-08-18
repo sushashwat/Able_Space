@@ -2,9 +2,17 @@ export type TaskStatus = 'To Do' | 'Doing' | 'Completed' | 'On Hold';
 export type Priority = 'No Priority' | 'Urgent' | 'High' | 'Medium' | 'Low';
 
 export interface Comment {
-  author: string; // User ID
+  author: string;
   text: string;
   createdAt: string;
+}
+
+export interface TaskUpdate {
+  field: string;
+  oldValue: string | null;
+  newValue: string | null;
+  changedBy: string;
+  changedAt: string;
 }
 
 export interface Task {
@@ -13,14 +21,17 @@ export interface Task {
   description: string;
   status: TaskStatus;
   priority: Priority;
-  members: string[]; // User IDs
+  members: string[];
   dueDate: string | null;
   startDate: string | null;
   labels: string[];
+  teams: string[];
+  resources: string[];
   parentTask: string | null;
   project: string | null;
   reporter: string;
   comments: Comment[];
+  updates: TaskUpdate[];
   createdAt: string;
   updatedAt: string;
 }
@@ -34,6 +45,8 @@ export interface CreateTaskInput {
   dueDate?: string;
   startDate?: string;
   labels?: string[];
+  teams?: string[];
+  resources?: string[];
   parentTask?: string;
   project?: string;
 }
