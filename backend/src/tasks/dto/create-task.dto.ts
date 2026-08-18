@@ -1,43 +1,63 @@
-import { IsString, IsOptional, IsEnum, IsArray, IsMongoId, IsDateString } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsOptional,
+  IsEnum,
+  IsMongoId,
+  IsArray,
+  IsDateString,
+} from 'class-validator';
 
 export class CreateTaskDto {
   @IsString()
+  @IsNotEmpty()
   title!: string;
 
-  @IsOptional()
   @IsString()
+  @IsOptional()
   description?: string;
 
-  @IsOptional()
   @IsEnum(['To Do', 'Doing', 'Completed', 'On Hold'])
+  @IsOptional()
   status?: string;
 
-  @IsOptional()
   @IsEnum(['No Priority', 'Urgent', 'High', 'Medium', 'Low'])
+  @IsOptional()
   priority?: string;
 
-  @IsOptional()
   @IsArray()
   @IsMongoId({ each: true })
+  @IsOptional()
   members?: string[];
 
-  @IsOptional()
   @IsDateString()
+  @IsOptional()
   dueDate?: string;
 
-  @IsOptional()
   @IsDateString()
+  @IsOptional()
   startDate?: string;
 
-  @IsOptional()
   @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
   labels?: string[];
 
+  @IsArray()
+  @IsString({ each: true })
   @IsOptional()
+  teams?: string[];
+
+  @IsArray()
+  @IsString({ each: true })
+  @IsOptional()
+  resources?: string[];
+
   @IsMongoId()
+  @IsOptional()
   parentTask?: string;
 
-  @IsOptional()
   @IsMongoId()
+  @IsOptional()
   project?: string;
 }

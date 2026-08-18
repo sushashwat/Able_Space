@@ -33,6 +33,7 @@ export class TasksController {
     @Req() req: Request,
     @Query('projectId') projectId?: string,
     @Query('status') status?: string,
+    @Query('parentTask') parentTask?: string,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
   ) {
@@ -40,6 +41,7 @@ export class TasksController {
     return this.tasksService.findAll(userId, {
       projectId,
       status,
+      parentTask,
       page: page ? parseInt(page) : undefined,
       limit: limit ? parseInt(limit) : undefined,
     });
