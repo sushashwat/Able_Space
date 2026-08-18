@@ -18,6 +18,7 @@ import {
 import { useAuthStore } from '@/lib/store/authStore';
 import { useThemeStore } from '@/lib/store/themeStore';
 import type { Theme, ColorMode } from '@/lib/types/user';
+import {getAvatarUrl} from '@/lib/utils';
 
 const navItems = [
   { label: 'Tasks', href: '/tasks', icon: LayoutGrid },
@@ -38,13 +39,13 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="flex h-screen w-64 flex-col border-r bg-white">
+    <aside className="flex h-screen w-64 flex-col border-r bg-sidebar">
       {/* User switcher */}
       <div className="border-b p-3">
         <DropdownMenu>
-          <DropdownMenuTrigger className="flex w-full items-center gap-2 rounded-md p-2 text-left hover:bg-gray-100">
+          <DropdownMenuTrigger className="flex w-full items-center gap-2 rounded-md p-2 text-left hover:bg-accent">
             <Avatar className="h-7 w-7">
-              <AvatarImage src={user?.avatarUrl} />
+              <AvatarImage src={user?.avatarUrl || getAvatarUrl(user?.id ?? 'guest')} />
               <AvatarFallback>
                 {user?.fullName?.[0]?.toUpperCase() ?? 'U'}
               </AvatarFallback>
@@ -52,7 +53,7 @@ export function Sidebar() {
             <span className="flex-1 truncate text-sm font-medium">
               {user?.fullName ?? 'Guest'}
             </span>
-            <ChevronsUpDown className="h-4 w-4 text-gray-400" />
+            <ChevronsUpDown className="h-4 w-4 text-muted-foreground" />
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="start" className="w-56">
@@ -89,7 +90,7 @@ export function Sidebar() {
             <DropdownMenuItem onClick={() => router.push('/settings')}>
               Settings
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={handleLogout} className="text-red-600">
+            <DropdownMenuItem onClick={handleLogout} className="text-destructive">
               Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
@@ -98,7 +99,7 @@ export function Sidebar() {
 
       {/* Nav */}
       <nav className="flex-1 space-y-1 p-3">
-        <p className="px-2 py-1 text-xs font-medium text-gray-400">Workspace</p>
+        <p className="px-2 py-1 text-xs font-medium text-muted-foreground">Workspace</p>
         {navItems.map((item) => {
           const isActive = pathname.startsWith(item.href);
           const Icon = item.icon;
@@ -108,8 +109,8 @@ export function Sidebar() {
               href={item.href}
               className={`flex items-center gap-2 rounded-md px-2 py-1.5 text-sm font-medium transition-colors ${
                 isActive
-                  ? 'bg-gray-100 text-gray-900'
-                  : 'text-gray-600 hover:bg-gray-50'
+                  ? 'bg-accent text-foreground'
+                  : 'text-muted-foreground hover:bg-accent'
               }`}
             >
               <Icon className="h-4 w-4" />

@@ -9,6 +9,7 @@ import { useThemeStore } from '@/lib/store/themeStore';
 import { apiClient } from '@/lib/api/client';
 import { getProfile } from '@/lib/api/auth';
 import type { Theme, ColorMode } from '@/lib/types/user';
+import { getAvatarUrl } from '@/lib/utils';
 
 const colorModes: ColorMode[] = ['amber', 'blue', 'pink', 'rose', 'emerald', 'black'];
 
@@ -73,7 +74,7 @@ export default function SettingsPage() {
         <div className="flex items-center justify-between mb-4">
           <span className="text-sm text-muted-foreground">Profile picture</span>
           <Avatar className="h-10 w-10">
-            <AvatarImage src={user?.avatarUrl} />
+            <AvatarImage src={user?.avatarUrl || getAvatarUrl(user?.id ?? 'guest')} />
             <AvatarFallback>
               {user?.fullName?.[0]?.toUpperCase() ?? 'U'}
             </AvatarFallback>
