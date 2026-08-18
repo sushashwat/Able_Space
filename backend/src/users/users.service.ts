@@ -9,6 +9,10 @@ export class UsersService {
     @InjectModel(User.name) private userModel: Model<UserDocument>,
   ) {}
 
+  async findAll() {
+    return this.userModel.find().select('-password -googleId').exec();
+  }
+
   async updateProfile(userId: string, data: Partial<User>) {
     const user = await this.userModel
       .findByIdAndUpdate(userId, data, { new: true })
