@@ -32,7 +32,7 @@ export default function AuthCallbackPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center">
-      <p className="text-sm text-gray-500">Logging you in...</p>
+      <p className="text-sm text-muted-foreground">Logging you in...</p>
     </div>
   );
 }

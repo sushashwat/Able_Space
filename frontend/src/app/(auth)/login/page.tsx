@@ -37,12 +37,12 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <div className="rounded-xl border bg-white p-8 shadow-sm">
+        <div className="rounded-xl border bg-card p-8 shadow-sm">
           <div className="text-center mb-6">
-            <h1 className="text-xl font-semibold text-gray-900">
+            <h1 className="text-xl font-semibold text-foreground">
               Let&apos;s get back on track
             </h1>
-            <p className="mt-2 text-sm text-gray-500">
+            <p className="mt-2 text-sm text-muted-foreground">
               Enter your email below to login to your account.
             </p>
           </div>
@@ -67,13 +67,13 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <p className="mt-6 text-center text-xs text-gray-500">
+        <p className="mt-6 text-center text-xs text-muted-foreground">
           By clicking continue, you agree to our{' '}
-          <a href="#" className="underline hover:text-gray-700">
+          <a href="#" className="underline hover:text-foreground">
             Terms of Service
           </a>{' '}
           and{' '}
-          <a href="#" className="underline hover:text-gray-700">
+          <a href="#" className="underline hover:text-foreground">
             Privacy Policy
           </a>
         </p>
