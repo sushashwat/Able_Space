@@ -4,6 +4,7 @@ import type { Model } from 'mongoose';
 import { Task, TaskDocument } from '../schemas/task.schema';
 import type { CreateTaskDto } from './dto/create-task.dto';
 import type { UpdateTaskDto } from './dto/update-task.dto';
+import { Types } from 'mongoose';
 
 const TRACKED_FIELDS = ['status', 'priority'];
 
@@ -11,7 +12,7 @@ const TRACKED_FIELDS = ['status', 'priority'];
 export class TasksService {
   constructor(
     @InjectModel(Task.name) private taskModel: Model<TaskDocument>,
-  ) {}
+  ) { }
 
   async create(createTaskDto: CreateTaskDto, userId: string) {
     const task = new this.taskModel({
@@ -90,5 +91,15 @@ export class TasksService {
     const task = await this.findOne(id, userId);
     await task.deleteOne();
     return { message: 'Task deleted successfully' };
+  }
+
+  async addComment(id: string, text: string, userId: string) {
+    const task = await this.findOne(id, userId);
+    task.comments.push({
+      author: new Types.ObjectId(userId) as any,
+      text,
+      createdAt: new Date(),
+    });
+    return task.save();
   }
 }

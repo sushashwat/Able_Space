@@ -28,6 +28,16 @@ export class TasksController {
     return this.tasksService.create(createTaskDto, userId);
   }
 
+  @Post(':id/comments')
+  addComment(
+    @Param('id') id: string,
+    @Body() body: { text: string },
+    @Req() req: Request,
+  ) {
+    const userId = (req.user as any).userId;
+    return this.tasksService.addComment(id, body.text, userId);
+  }
+
   @Get()
   findAll(
     @Req() req: Request,
