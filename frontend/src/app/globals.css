@@ -117,6 +117,51 @@
   --sidebar-ring: oklch(0.556 0 0);
 }
 
+/* Add this block after the .dark { ... } block in globals.css */
+
+[data-color-mode='amber'] {
+  --primary: oklch(0.769 0.188 70.08);
+  --primary-foreground: oklch(0.985 0 0);
+  --ring: oklch(0.769 0.188 70.08);
+  --sidebar-primary: oklch(0.769 0.188 70.08);
+}
+
+[data-color-mode='blue'] {
+  --primary: oklch(0.6 0.19 260);
+  --primary-foreground: oklch(0.985 0 0);
+  --ring: oklch(0.6 0.19 260);
+  --sidebar-primary: oklch(0.6 0.19 260);
+}
+
+[data-color-mode='pink'] {
+  --primary: oklch(0.7 0.2 350);
+  --primary-foreground: oklch(0.985 0 0);
+  --ring: oklch(0.7 0.2 350);
+  --sidebar-primary: oklch(0.7 0.2 350);
+}
+
+[data-color-mode='rose'] {
+  --primary: oklch(0.65 0.22 15);
+  --primary-foreground: oklch(0.985 0 0);
+  --ring: oklch(0.65 0.22 15);
+  --sidebar-primary: oklch(0.65 0.22 15);
+}
+
+[data-color-mode='emerald'] {
+  --primary: oklch(0.65 0.17 155);
+  --primary-foreground: oklch(0.985 0 0);
+  --ring: oklch(0.65 0.17 155);
+  --sidebar-primary: oklch(0.65 0.17 155);
+}
+
+[data-color-mode='black'] {
+  --primary: oklch(0.145 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --ring: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.145 0 0);
+}
+
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
