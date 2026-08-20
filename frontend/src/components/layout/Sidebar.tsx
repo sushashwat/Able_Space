@@ -41,7 +41,7 @@ export function Sidebar() {
   return (
     <aside className="flex h-screen w-64 flex-col border-r bg-sidebar">
       {/* User switcher */}
-      <div className="border-b p-3">
+
         <DropdownMenu>
           <DropdownMenuTrigger className="flex w-full items-center gap-2 rounded-md p-2 text-left hover:bg-accent">
             <Avatar className="h-7 w-7">
@@ -95,7 +95,7 @@ export function Sidebar() {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      </div>
+      
 
       {/* Nav */}
       <nav className="flex-1 space-y-1 p-3">
