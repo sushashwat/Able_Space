@@ -22,22 +22,41 @@ const fieldLabels = {
   reporter: 'Reporter',
 };
 
+const DEFAULT_FIELDS = {
+  priority: true,
+  members: true,
+  dueDate: true,
+  labels: false,
+  status: false,
+  reporter: false,
+};
+
+const VIEW_STORAGE_KEY = 'tasks-view-mode';
+const FIELDS_STORAGE_KEY = 'tasks-board-fields';
+
 export function TaskBoard({ onTaskClick }: { onTaskClick: (id: string) => void }) {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [modalStatus, setModalStatus] = useState<TaskStatus | null>(null);
   const [view, setView] = useState<'board' | 'list'>('board');
   const [search, setSearch] = useState('');
-  const [fields, setFields] = useState({
-    priority: true,
-    members: true,
-    dueDate: true,
-    labels: false,
-    status: false,
-    reporter: false,
-  });
+  const [fields, setFields] = useState(DEFAULT_FIELDS);
 
   useEffect(() => {
+    const storedView = localStorage.getItem(VIEW_STORAGE_KEY);
+    if (storedView === 'board' || storedView === 'list') {
+      setView(storedView);
+    }
+
+    const storedFields = localStorage.getItem(FIELDS_STORAGE_KEY);
+    if (storedFields) {
+      try {
+        setFields({ ...DEFAULT_FIELDS, ...JSON.parse(storedFields) });
+      } catch {
+        // ignore malformed value, keep defaults
+      }
+    }
+
     loadTasks();
   }, []);
 
@@ -60,6 +79,17 @@ export function TaskBoard({ onTaskClick }: { onTaskClick: (id: string) => void }
     } catch {
       loadTasks();
     }
+  }
+
+  function handleViewChange(next: 'board' | 'list') {
+    setView(next);
+    localStorage.setItem(VIEW_STORAGE_KEY, next);
+  }
+
+  function handleFieldsChange(key: string, value: boolean) {
+    const next = { ...fields, [key]: value };
+    setFields(next);
+    localStorage.setItem(FIELDS_STORAGE_KEY, JSON.stringify(next));
   }
 
   const filteredTasks = useMemo(() => {
@@ -87,13 +117,13 @@ export function TaskBoard({ onTaskClick }: { onTaskClick: (id: string) => void }
         <div className="flex items-center gap-2">
           <div className="flex rounded-md border overflow-hidden">
             <button
-              onClick={() => setView('list')}
+              onClick={() => handleViewChange('list')}
               className={`p-1.5 ${view === 'list' ? 'bg-accent' : ''}`}
             >
               <List className="h-4 w-4" />
             </button>
             <button
-              onClick={() => setView('board')}
+              onClick={() => handleViewChange('board')}
               className={`p-1.5 ${view === 'board' ? 'bg-accent' : ''}`}
             >
               <LayoutGrid className="h-4 w-4" />
@@ -103,7 +133,7 @@ export function TaskBoard({ onTaskClick }: { onTaskClick: (id: string) => void }
           <FieldsDropdown
             fields={fields}
             labels={fieldLabels}
-            onChange={(key, value) => setFields((prev) => ({ ...prev, [key]: value }))}
+            onChange={handleFieldsChange}
           />
 
           <Button size="sm" onClick={() => setModalStatus('To Do')}>
@@ -114,7 +144,7 @@ export function TaskBoard({ onTaskClick }: { onTaskClick: (id: string) => void }
       </div>
 
       {view === 'board' ? (
-        <div className="flex gap-4 overflow-x-auto p-6 h-full">
+        <div className="flex gap-4 overflow-x-auto p-6 h-full items-start">
           {columns.map((status) => {
             const columnTasks = filteredTasks.filter((t) => t.status === status);
             return (
@@ -144,7 +174,7 @@ export function TaskBoard({ onTaskClick }: { onTaskClick: (id: string) => void }
                       draggable
                       onDragStart={(e) => e.dataTransfer.setData('taskId', task._id)}
                     >
-                      <TaskCard task={task} onClick={() => onTaskClick(task._id)} />
+                      <TaskCard task={task} fields={fields} onClick={() => onTaskClick(task._id)} />
                     </div>
                   ))}
                 </div>

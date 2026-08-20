@@ -40,3 +40,8 @@ export async function deleteTask(id: string): Promise<{ message: string }> {
   const { data } = await apiClient.delete<{ message: string }>(`/tasks/${id}`);
   return data;
 }
+
+export async function addComment(id: string, text: string): Promise<Task> {
+  const { data } = await apiClient.post<Task>(`/tasks/${id}/comments`, { text });
+  return data;
+}

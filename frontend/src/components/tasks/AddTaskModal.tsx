@@ -25,10 +25,11 @@ interface AddTaskModalProps {
   open: boolean;
   onClose: () => void;
   defaultStatus: TaskStatus;
+  defaultProject?: string;
   onCreated: () => void;
 }
 
-export function AddTaskModal({ open, onClose, defaultStatus, onCreated }: AddTaskModalProps) {
+export function AddTaskModal({ open, onClose, defaultStatus, defaultProject, onCreated }: AddTaskModalProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<Priority>('No Priority');
@@ -43,6 +44,7 @@ export function AddTaskModal({ open, onClose, defaultStatus, onCreated }: AddTas
         description,
         priority,
         status: defaultStatus,
+        project: defaultProject,
       });
       setTitle('');
       setDescription('');
