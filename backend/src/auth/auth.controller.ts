@@ -8,7 +8,7 @@ import type { Response, Request } from 'express';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private authService: AuthService) { }
 
   @Post('guest')
   async guestLogin() {
@@ -26,7 +26,7 @@ export class AuthController {
   async googleAuthCallback(@Req() req: any, @Res() res: Response) {
     const result = await this.authService.googleLogin(req.user);
     res.redirect(
-      `http://localhost:3000/auth/callback?token=${result.access_token}`,
+      `${process.env.FRONTEND_URL || 'http://localhost:3000'}/auth/callback?token=${result.access_token}`,
     );
   }
 
